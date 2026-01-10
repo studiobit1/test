@@ -1,44 +1,61 @@
 <!DOCTYPE html>
 <html lang="ko">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Premium To-Do App</title>
+    <title>Sprint Buddy - PM 학습용 할 일 관리</title>
+    <meta name="description" content="IT 서비스 기획자(PM) 공부를 위한 우선순위 및 공수 산정 가능 할 일 관리 앱">
     <link rel="stylesheet" href="style.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;600;700&display=swap" rel="stylesheet">
 </head>
+
 <body>
-    <div class="background-blobs">
-        <div class="blob blob-1"></div>
-        <div class="blob blob-2"></div>
-        <div class="blob blob-3"></div>
-    </div>
-    
-    <main class="app-container">
+    <div id="app" class="glass-container">
         <header>
-            <h1>My Daily Tasks</h1>
-            <p id="date-display"></p>
+            <h1>Sprint Buddy 🚀</h1>
+            <p class="subtitle">PM의 성장을 돕는 할 일 관리 도구</p>
         </header>
 
-        <section class="input-section">
-            <input type="text" id="todo-input" placeholder="새로운 할 일을 입력하세요..." autocomplete="off">
-            <button id="add-btn">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
-            </button>
+        <section class="task-input-card glass-panel">
+            <div class="input-row">
+                <input type="text" id="task-title" placeholder="새로운 작업을 입력하세요 (예: 유저 인터뷰 질문지 작성)" aria-label="작업 제목">
+                <select id="task-priority" aria-label="우선순위">
+                    <option value="" disabled selected>우선순위 (MoSCoW)</option>
+                    <option value="Must">Must-have (필수)</option>
+                    <option value="Should">Should-have (중요)</option>
+                    <option value="Could">Could-have (보조)</option>
+                    <option value="Wont">Won't-have (제외)</option>
+                </select>
+            </div>
+            <div class="input-row secondary">
+                <select id="task-estimation" aria-label="공수 산정">
+                    <option value="" disabled selected>공수 산정 (Point)</option>
+                    <option value="1">1 pt (매우 쉬움)</option>
+                    <option value="2">2 pt (쉬움)</option>
+                    <option value="3">3 pt (보통)</option>
+                    <option value="5">5 pt (복잡함)</option>
+                    <option value="8">8 pt (매우 복잡함)</option>
+                </select>
+                <button id="add-task-btn" class="primary-btn">작업 추가</button>
+            </div>
         </section>
 
-        <ul id="todo-list" class="todo-list">
-            <!-- Tasks will be injected here -->
-        </ul>
-
-        <div class="stats">
-            <span id="pending-count">0 tasks left</span>
-            <button id="clear-all" class="text-btn">모두 삭제</button>
-        </div>
-    </main>
+        <main class="task-board">
+            <div class="column backlog">
+                <h2>Backlog <span id="backlog-count" class="count">0</span></h2>
+                <div id="backlog-list" class="task-list"></div>
+            </div>
+            <div class="column done">
+                <h2>Done <span id="done-count" class="count">0</span></h2>
+                <div id="done-list" class="task-list"></div>
+            </div>
+        </main>
+    </div>
 
     <script src="app.js"></script>
 </body>
+
 </html>
