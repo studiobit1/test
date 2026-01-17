@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>D-Day 계산기</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 500px;
+            width: 100%;
+        }
+
+        h1 {
+            text-align: center;
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 2.5em;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 0.9em;
+        }
+
+        .input-group {
+            margin-bottom: 25px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 600;
+            font-size: 0.95em;
+        }
+
+        input[type="text"],
+        input[type="date"] {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 1em;
+            transition: all 0.3s;
+        }
+
+        input[type="text"]:focus,
+        input[type="date"]:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .button-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        button {
+            flex: 1;
+            padding: 15px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-calculate {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-calculate:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-reset {
+            background: #f5f5f5;
+            color: #666;
+        }
+
+        .btn-reset:hover {
+            background: #e0e0e0;
+        }
+
+        .result {
+            margin-top: 30px;
+            padding: 25px;
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            border-radius: 15px;
+            text-align: center;
+            display: none;
+            animation: slideIn 0.5s ease;
+        }
+
+        .result.show {
+            display: block;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .result-title {
+            color: white;
+            font-size: 1.1em;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        .dday-number {
+            font-size: 3em;
+            font-weight: bold;
+            color: white;
+            margin: 10px 0;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .result-detail {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 0.9em;
+            margin-top: 10px;
+        }
+
+        .saved-items {
+            margin-top: 30px;
+        }
+
+        .saved-items h3 {
+            color: #333;
+            margin-bottom: 15px;
+            font-size: 1.2em;
+        }
+
+        .saved-item {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s;
+        }
+
+        .saved-item:hover {
+            background: #e9ecef;
+            transform: translateX(5px);
+        }
+
+        .saved-item-info {
+            flex: 1;
+        }
+
+        .saved-item-title {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .saved-item-date {
+            font-size: 0.85em;
+            color: #666;
+        }
+
+        .saved-item-dday {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #667eea;
+            margin-right: 15px;
+        }
+
+        .btn-delete {
+            background: #ff6b6b;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: all 0.3s;
+        }
+
+        .btn-delete:hover {
+            background: #ff5252;
+        }
+
+        .empty-state {
+            text-align: center;
+            color: #999;
+            padding: 20px;
+            font-size: 0.9em;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>📅 D-Day 계산기</h1>
+        <p class="subtitle">목표 날짜까지 남은 일수를 계산해보세요</p>
+
+        <div class="input-group">
+            <label for="event-name">이벤트 이름</label>
+            <input type="text" id="event-name" placeholder="예: 시험, 프로젝트 마감, 여행">
+        </div>
+
+        <div class="input-group">
+            <label for="target-date">목표 날짜</label>
+            <input type="date" id="target-date">
+        </div>
+
+        <div class="button-group">
+            <button class="btn-calculate" onclick="calculateDday()">계산하기</button>
+            <button class="btn-reset" onclick="resetForm()">초기화</button>
+        </div>
+
+        <div class="result" id="result">
+            <div class="result-title" id="result-title">D-Day</div>
+            <div class="dday-number" id="dday-number">D-0</div>
+            <div class="result-detail" id="result-detail"></div>
+        </div>
+
+        <div class="saved-items">
+            <h3>저장된 D-Day 목록</h3>
+            <div id="saved-list">
+                <div class="empty-state">저장된 D-Day가 없습니다</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 페이지 로드 시 저장된 목록 불러오기
+        window.addEventListener('DOMContentLoaded', function() {
+            loadSavedItems();
+            // 오늘 날짜를 기본값으로 설정
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('target-date').min = today;
+        });
+
+        function calculateDday() {
+            const eventName = document.getElementById('event-name').value.trim();
+            const targetDate = document.getElementById('target-date').value;
+
+            if (!eventName) {
+                alert('이벤트 이름을 입력해주세요!');
+                return;
+            }
+
+            if (!targetDate) {
+                alert('목표 날짜를 선택해주세요!');
+                return;
+            }
+
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            const target = new Date(targetDate);
+            target.setHours(0, 0, 0, 0);
+
+            const diffTime = target - today;
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+            // 결과 표시
+            const resultDiv = document.getElementById('result');
+            const resultTitle = document.getElementById('result-title');
+            const ddayNumber = document.getElementById('dday-number');
+            const resultDetail = document.getElementById('result-detail');
+
+            resultTitle.textContent = eventName;
+
+            if (diffDays > 0) {
+                ddayNumber.textContent = `D-${diffDays}`;
+                resultDetail.textContent = `${targetDate}까지 ${diffDays}일 남았습니다`;
+            } else if (diffDays === 0) {
+                ddayNumber.textContent = 'D-Day!';
+                resultDetail.textContent = '오늘이 바로 그날입니다!';
+            } else {
+                ddayNumber.textContent = `D+${Math.abs(diffDays)}`;
+                resultDetail.textContent = `${targetDate}로부터 ${Math.abs(diffDays)}일 지났습니다`;
+            }
+
+            resultDiv.classList.add('show');
+
+            // 저장
+            saveItem(eventName, targetDate, diffDays);
+        }
+
+        function resetForm() {
+            document.getElementById('event-name').value = '';
+            document.getElementById('target-date').value = '';
+            document.getElementById('result').classList.remove('show');
+        }
+
+        function saveItem(name, date, days) {
+            let items = JSON.parse(localStorage.getItem('ddayItems') || '[]');
+
+            // 중복 체크
+            const exists = items.some(item => item.name === name && item.date === date);
+            if (!exists) {
+                items.push({ name, date, days });
+                localStorage.setItem('ddayItems', JSON.stringify(items));
+                loadSavedItems();
+            }
+        }
+
+        function loadSavedItems() {
+            let items = JSON.parse(localStorage.getItem('ddayItems') || '[]');
+            const savedList = document.getElementById('saved-list');
+
+            if (items.length === 0) {
+                savedList.innerHTML = '<div class="empty-state">저장된 D-Day가 없습니다</div>';
+                return;
+            }
+
+            // 날짜 기준으로 다시 계산
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+
+            items = items.map(item => {
+                const target = new Date(item.date);
+                target.setHours(0, 0, 0, 0);
+                const diffTime = target - today;
+                const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+                return { ...item, days: diffDays };
+            });
+
+            // 날짜순 정렬 (가까운 날짜부터)
+            items.sort((a, b) => a.days - b.days);
+
+            savedList.innerHTML = items.map((item, index) => {
+                let ddayText;
+                if (item.days > 0) {
+                    ddayText = `D-${item.days}`;
+                } else if (item.days === 0) {
+                    ddayText = 'D-Day!';
+                } else {
+                    ddayText = `D+${Math.abs(item.days)}`;
+                }
+
+                return `
+                    <div class="saved-item">
+                        <div class="saved-item-info">
+                            <div class="saved-item-title">${item.name}</div>
+                            <div class="saved-item-date">${item.date}</div>
+                        </div>
+                        <div class="saved-item-dday">${ddayText}</div>
+                        <button class="btn-delete" onclick="deleteItem(${index})">삭제</button>
+                    </div>
+                `;
+            }).join('');
+
+            // localStorage 업데이트 (재계산된 값으로)
+            localStorage.setItem('ddayItems', JSON.stringify(items));
+        }
+
+        function deleteItem(index) {
+            let items = JSON.parse(localStorage.getItem('ddayItems') || '[]');
+            items.splice(index, 1);
+            localStorage.setItem('ddayItems', JSON.stringify(items));
+            loadSavedItems();
+        }
+    </script>
+</body>
+
+</html>
