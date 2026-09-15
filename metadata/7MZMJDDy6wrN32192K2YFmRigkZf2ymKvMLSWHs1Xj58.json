@@ -1,0 +1,6 @@
+{
+  "name": "Test USDC",
+  "symbol": "tUSDC",
+  "description": "Solana devnet 테스트용 USDC 모사 토큰",
+  "image": "https://raw.githubusercontent.com/studiobit1/test/refs/heads/main/images/tusdc.png"
+}
